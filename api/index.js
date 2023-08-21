@@ -19,9 +19,7 @@ app.get("/api/generate", (req, res) => {
   res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
 
   // const ip = IP.address();
-  const ip =
-    (req.headers["x-forwarded-for"] || "").split(",")[0] ||
-    req.socket.remoteAddress;
+  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
   const image = `
     <svg viewbox="0 0 ${width} ${height}" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
