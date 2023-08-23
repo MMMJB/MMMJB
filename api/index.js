@@ -1,65 +1,70 @@
 const express = require("express");
+const fetch = require("node-fetch");
 const path = require("path");
-// const IP = require("ip");
+const octo = require("octokit");
 
 const app = express();
+const octokit = new octo.Octokit({
+  auth: process.env.GH_KEY,
+  request: { fetch: fetch },
+});
 
 const port = 3000;
+const user = "MMMJB";
+
+const blacklist = ["gitignore", "LICENSE"];
 
 app.get("/test", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "test.html"));
 });
 
-app.get("/api/generate", (req, res) => {
-  const width = 600,
-    height = 200,
-    fontSize = 24;
+app.get("/api/generate", async (req, res) => {
+  res.setHeader("Content-Type", "text/json");
+  res.setHeader("Cache-Control", "no-cache");
 
-  res.setHeader("Content-Type", "image/svg+xml");
-  res.setHeader("Cache-Control", "s-max-age=1, stale-while-revalidate");
+  const response = [];
 
-  // const ip = IP.address();
-  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  const repos = await octokit.request("GET /users/{username}/repos", {
+    username: user,
+  });
 
-  const image = `
-    <svg viewbox="0 0 ${width} ${height}" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        @keyframes reveal {
-          to {
-            opacity: 1;
-            translate: 0 0;
-          }
+  await Promise.all(
+    repos["data"].map(async (r) => {
+      const info = await octokit.request(
+        "GET /repos/{owner}/{repo}/branches/{branch}",
+        {
+          owner: user,
+          repo: r["name"],
+          branch: r["default_branch"],
+        }
+      );
+
+      const sha = info["data"]["commit"]["commit"]["tree"]["sha"];
+
+      const repo = await octokit.request(
+        "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
+        {
+          owner: user,
+          repo: r["name"],
+          tree_sha: sha,
+        }
+      );
+
+      const languages = repo["data"]["tree"].reduce((a, c) => {
+        if (c.type === "blob") {
+          const extension = c.path.substring(c.path.lastIndexOf(".") + 1);
+
+          if (!blacklist.includes(extension)) a.push(extension);
         }
 
-        text {
-          font-size: ${fontSize}px;
-          font-family: system-ui;
-          fill: rgba(255, 255, 255, .75);
-        }
+        return a;
+      }, []);
 
-        .ip-text {
-          font-family: monospace;
-          opacity: 0;
-          translate: 0 -8px;
-          animation: reveal 200ms ease-out forwards;
-          fill: white;
-        }
-      </style>
+      response.push(languages);
+    })
+  );
 
-      <rect x="0" width="${width}" height="${height}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" stroke-width="2"/>
-      
-      <text class="ip-text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">
-        ${ip
-          .split("")
-          .map((c, i) => {
-            return `<tspan style="animation-delay: ${i * 25}ms">${c}</tspan>`;
-          })
-          .join("")}
-      </text>
-    </svg>
-  `;
-
-  res.send(image);
+  res.send(response);
 });
 
 app.listen(port, (_) => {
