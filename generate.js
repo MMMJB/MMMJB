@@ -28,13 +28,19 @@ const generateGraph = (sorted, connected) => {
         ${sizeArr
           .map((e, i) => {
             const x =
-              sizeArr.slice(0, i).reduce((p, c) => p + sizes[c] * 2, 0) + i * 4;
+              sizeArr
+                .slice(0, i + 1)
+                .reduce(
+                  (p, c, i) => p + sizes[c] + (sizes[sizeArr[i - 1]] || 0),
+                  0
+                ) +
+              i * 4;
 
             const fill = `hsl(${
               ((sizeArr.length - i) / sizeArr.length) * 300
             }, 75%, 60%)`;
 
-            return `<circle cx="${x}" cy="0" r="${sizes[e]}" fill="${fill}" />`;
+            return `<circle cx="${x}" cy="0" r="${sizes[e]}" fill="${fill}" fill-opacity="75%" />`;
           })
           .join("")}
       </g>
