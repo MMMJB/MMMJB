@@ -1,5 +1,5 @@
 const generateGraph = (sorted, connected) => {
-  const w = 600,
+  const w = 500,
     h = 200,
     cs = h / 6,
     s = 8;
@@ -16,27 +16,43 @@ const generateGraph = (sorted, connected) => {
     <svg viewbox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
       <style>
         @keyframes enter {
-          0% { transform: scale(20) translate(-300px, 0px); }
+          0% { transform: scale(15) translate(-300px, 0px); }
           100% { transform: scale(1) translate(0px, 0px); }
+        }
+
+        @keyframes rotate {
+          0%, 100% { translate: 0px -2px }
+          12.5% { translate: 1px -.5px }
+          25% { translate: 2px 0px }
+          37.5% { translate: 1px .5px }
+          50% { translate: 0px 2px }
+          62.5 { translate: -1px .5px }
+          75% { translate: -2px 0px }
+          87.5% { translate: -1px -.5px }
         }
       
         text {
+           font-family: "system-ui", "sans-serif";
+        }
+
+        .bubble text {
           fill: rgba(255, 255, 255, .5);
-          font-family: "system-ui", "sans-serif";
           font-size: 12px;
           text-transform: uppercase;
         }
 
         .bubble {
-          animation: enter 3s ease forwards;
+          animation: enter 3s ease forwards, rotate 10s linear infinite;
+        }
+
+        .bubble:nth-child(odd) {
+          animation-direction: normal, reverse;
         }
       </style>
       
       <rect x="0" width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" stroke-width="2"/>
 
-      <g id="bubbles" transform="translate(${w / 2 - totalWidth / 2}, ${
-    h / 2
-  })">
+      <g transform="translate(${w / 2 - totalWidth / 2}, ${h / 2})">
         ${sizeArr
           .map((e, i) => {
             const x =
@@ -65,6 +81,13 @@ const generateGraph = (sorted, connected) => {
             `;
           })
           .join("")}
+      </g>
+
+      <g dominant-baseline="middle" text-anchor="middle">
+        <text x="50%" y="18" fill="white">Languages Used</text>
+        <text x="50%" y="${
+          h - 12
+        }" fill="white" fill-opacity="50%" font-size="8px">Based on number of files of type created in all public repositories.</text>
       </g>
     </svg>
   `;
