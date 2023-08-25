@@ -6,16 +6,11 @@ const octo = require("octokit");
 const generate = require("./../generate");
 
 const whitelist = require("./../languages");
-const data = require("./../testdata.json");
+// const data = require("./../testdata.json");
 
 const app = express();
-const octokit = new octo.Octokit({
-  auth: process.env.GH_KEY,
-  request: { fetch: fetch },
-});
 
 const port = 3000;
-const user = "MMMJB";
 
 app.get("/test", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "test.html"));
@@ -25,48 +20,68 @@ app.get("/api/generate", async (req, res) => {
   res.setHeader("Content-Type", "image/svg+xml");
   res.setHeader("Cache-Control", "no-cache");
 
-  // const projectExts = [];
-  const projectExts = [...data];
+  const key = req.query.key;
+  const user = req.query.user;
 
-  // const repos = await octokit.request("GET /users/{username}/repos", {
-  //   username: user,
-  // });
+  if (!user)
+    return res.send(
+      generate.generateError(
+        "a valid github user must be specified",
+        "Reference using ?user=[user]"
+      )
+    );
 
-  // await Promise.all(
-  //   repos["data"].map(async (r) => {
-  //     const info = await octokit.request(
-  //       "GET /repos/{owner}/{repo}/branches/{branch}",
-  //       {
-  //         owner: user,
-  //         repo: r["name"],
-  //         branch: r["default_branch"],
-  //       }
-  //     );
+  const octokit = new octo.Octokit({
+    auth: key,
+    request: { fetch: fetch },
+  });
 
-  //     const sha = info["data"]["commit"]["commit"]["tree"]["sha"];
+  const projectExts = [];
+  // const projectExts = [...data];
 
-  //     const repo = await octokit.request(
-  //       "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
-  //       {
-  //         owner: user,
-  //         repo: r["name"],
-  //         tree_sha: sha,
-  //       }
-  //     );
+  try {
+    const repos = await octokit.request("GET /users/{username}/repos", {
+      username: user,
+    });
 
-  //     const files = repo["data"]["tree"].reduce((a, c) => {
-  //       if (c.type === "blob") {
-  //         const extension = c.path.substring(c.path.lastIndexOf(".") + 1);
+    await Promise.all(
+      repos["data"].map(async (r) => {
+        const info = await octokit.request(
+          "GET /repos/{owner}/{repo}/branches/{branch}",
+          {
+            owner: user,
+            repo: r["name"],
+            branch: r["default_branch"],
+          }
+        );
 
-  //         if (Object.keys(whitelist).includes(extension)) a.push(extension);
-  //       }
+        const sha = info["data"]["commit"]["commit"]["tree"]["sha"];
 
-  //       return a;
-  //     }, []);
+        const repo = await octokit.request(
+          "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
+          {
+            owner: user,
+            repo: r["name"],
+            tree_sha: sha,
+          }
+        );
 
-  //     projectExts.push(files);
-  //   })
-  // );
+        const files = repo["data"]["tree"].reduce((a, c) => {
+          if (c.type === "blob") {
+            const extension = c.path.substring(c.path.lastIndexOf(".") + 1);
+
+            if (Object.keys(whitelist).includes(extension)) a.push(extension);
+          }
+
+          return a;
+        }, []);
+
+        projectExts.push(files);
+      })
+    );
+  } catch (err) {
+    return res.send(generate.generateError(err.message));
+  }
 
   const extFreq = projectExts.flat().reduce((a, c) => {
     return a[c] ? ++a[c] : (a[c] = 1), a;
@@ -78,22 +93,7 @@ app.get("/api/generate", async (req, res) => {
       return (a[c] = extFreq[c]), a;
     }, {});
 
-  const connectedExts = projectExts.reduce((a, c) => {
-    const u = [...new Set(c)];
-
-    u.forEach((e) => {
-      c.forEach((ec) => {
-        if (!a[e]) a[e] = {};
-        if (e === ec) return;
-
-        a[e][ec] ? ++a[e][ec] : (a[e][ec] = 1);
-      });
-    });
-
-    return a;
-  }, {});
-
-  const image = generate.generateGraph(sortedExts, connectedExts);
+  const image = generate.generateBubbles(user, sortedExts);
 
   return res.send(image);
 });
