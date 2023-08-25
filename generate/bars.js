@@ -32,8 +32,24 @@ const generateBars = (sorted, title) => {
   const image = `
     <svg viewbox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
       <style>
+        @keyframes extend {
+          from { transform: scale(0, 1); }
+          to { transform: scale(1, 1); }
+        }
+
         text {
            font-family: "system-ui", "sans-serif";
+        }
+
+        .bar-shadow {
+          opacity: .15;
+          filter: saturate(0);
+        }
+
+        .bar {
+          transform-origin: 58px center;
+          animation: extend 1.5s ease forwards;
+          opacity: .75;
         }
 
         .label {
@@ -55,12 +71,18 @@ const generateBars = (sorted, title) => {
           .map((e, i) => {
             const y = calculateY(i);
             const w = sizes[e];
+            const fill = calculateFill(i);
 
             return `
               <text class="label" x="${m * 2}" y="${y}">${e}</text>
+              
+              <rect class="bar-shadow" x="${m * 2 + 8}" y="${
+              y - 6
+            }" width="${w}" height="12" fill="${fill}" rx="4" />
               <rect class="bar" x="${m * 2 + 8}" y="${
               y - 6
-            }" width="${w}" height="12" fill="${calculateFill(i)}" rx="4" />
+            }" width="${w}" height="12" fill="${fill}" rx="4" />
+              
               <text text-anchor="start" class="num" x="${
                 w + m * 2 + 12
               }" y="${y}">${sorted[e]}</text>
