@@ -13,7 +13,9 @@ const generateGraph = (sorted, connected) => {
     sizeArr.reduce((p, c) => p + sizes[c] * 2, 0) + sizeArr.length * s;
 
   const image = `
-    <svg viewbox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
+    <svg viewbox="0 0 ${w + 100} ${h}" width="${
+    w + 100
+  }" height="${h}" xmlns="http://www.w3.org/2000/svg">
       <style>
         @keyframes enter {
           0% { transform: scale(15) translate(-300px, 0px); }
@@ -50,9 +52,17 @@ const generateGraph = (sorted, connected) => {
         }
       </style>
       
-      <rect x="0" width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" stroke-width="2"/>
+      <defs>
+        <clipPath id="boxClip">
+          <rect x="-87px" y="-50%" width="${w}" height="${h}" rx="16" />
+        </clipPath>
+      </defs>
 
-      <g transform="translate(${w / 2 - totalWidth / 2}, ${h / 2})">
+      <rect width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" stroke-width="2"/>
+
+      <g id="bubbles" clip-path="url(#boxClip)" transform="translate(${
+        w / 2 - totalWidth / 2
+      }, ${h / 2})">
         ${sizeArr
           .map((e, i) => {
             const x =
@@ -84,10 +94,10 @@ const generateGraph = (sorted, connected) => {
       </g>
 
       <g dominant-baseline="middle" text-anchor="middle">
-        <text x="50%" y="18" fill="white">Languages Used</text>
-        <text x="50%" y="${
-          h - 12
-        }" fill="white" fill-opacity="50%" font-size="8px">Based on number of files of type created in all public repositories.</text>
+        <text x="${w / 2}" y="18" fill="white">Languages Used</text>
+        <text x="${w / 2}" y="${
+    h - 12
+  }" fill="white" fill-opacity="50%" font-size="8px">Based on number of files of type created in all public repositories.</text>
       </g>
     </svg>
   `;
