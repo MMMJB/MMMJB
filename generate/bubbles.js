@@ -1,9 +1,10 @@
-const w = 500,
-  h = 200;
+const config = require("./config.json");
 
-const generateBubbles = (username, sorted) => {
-  const cs = h / 6,
-    s = 8;
+const generateBubbles = (username, sorted, title) => {
+  const w = config.largeWidth,
+    h = config.largeHeight,
+    cs = config.bubbles.maxRad,
+    s = config.bubbles.spacing;
 
   const sizes = Object.keys(sorted).reduce((a, c) => {
     return (a[c] = (sorted[c] / sorted[Object.keys(sorted)[0]]) * cs), a;
@@ -53,7 +54,7 @@ const generateBubbles = (username, sorted) => {
       
       <defs>
         <clipPath id="boxClip">
-          <rect x="-87px" y="-50%" width="${w}" height="${h}" rx="16" />
+          <rect x="-80px" y="-50%" width="${w}" height="${h}" rx="16" />
         </clipPath>
       </defs>
 
@@ -93,9 +94,9 @@ const generateBubbles = (username, sorted) => {
       </g>
 
       <g dominant-baseline="middle" text-anchor="middle">
-        <text x="${
-          w / 2
-        }" y="18" fill="white">${username}'s Languages Used</text>
+        <text x="${w / 2}" y="18" fill="white">${
+    title !== undefined ? title : `${username}'s Languages Used`
+  }</text>
         <text x="${w / 2}" y="${
     h - 12
   }" fill="white" fill-opacity="50%" font-size="8px">Based on number of files of type created in all public repositories.</text>
@@ -106,26 +107,4 @@ const generateBubbles = (username, sorted) => {
   return image;
 };
 
-const generateError = (text, subtext) => {
-  return `
-    <svg viewbox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" stroke-width="2"/>
-
-      <g dominant-baseline="middle" text-anchor="middle">
-        <text x="50%" y="50%" fill="red" font-size="16px">Error generating image: ${text}.</text>
-        ${
-          subtext
-            ? `<text x="50%" y="${
-                h / 2 + 18
-              }" fill="red" fill-opacity="50%" font-size="12px">${subtext}.</text>`
-            : ""
-        }
-      </g>
-    </svg>
-  `;
-};
-
-module.exports = {
-  generateBubbles: generateBubbles,
-  generateError: generateError,
-};
+module.exports = generateBubbles;
