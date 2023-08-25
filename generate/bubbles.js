@@ -3,8 +3,8 @@ const config = require("./config.json");
 const generateBubbles = (username, sorted, title) => {
   const w = config.largeWidth,
     h = config.largeHeight,
-    cs = config.bubbles.maxRad,
-    s = config.bubbles.spacing;
+    cs = config.bubble.maxRad,
+    s = config.bubble.spacing;
 
   const sizes = Object.keys(sorted).reduce((a, c) => {
     return (a[c] = (sorted[c] / sorted[Object.keys(sorted)[0]]) * cs), a;

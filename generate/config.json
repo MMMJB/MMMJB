@@ -1,10 +1,13 @@
 {
   "largeWidth": 500,
   "largeHeight": 200,
-  "smallWidth": 200,
+  "smallWidth": 300,
   "smallHeight": 200,
-  "bubbles": {
+  "bubble": {
     "maxRad": 35,
+    "spacing": 8
+  },
+  "bar": {
     "spacing": 8
   }
 }
