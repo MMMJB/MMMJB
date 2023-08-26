@@ -106,6 +106,9 @@ app.get("/api/generate", async (req, res) => {
     case "bar":
       image = generate.generateBars(sortedExts, title);
       break;
+    case "both":
+      image = generate.generateBoth(user, sortedExts, title);
+      break;
     default:
       image = generate.generateBubbles(user, sortedExts, title);
   }

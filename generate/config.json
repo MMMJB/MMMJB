@@ -9,5 +9,8 @@
   },
   "bar": {
     "spacing": 8
+  },
+  "both": {
+    "spacing": 4
   }
 }
