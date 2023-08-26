@@ -23,7 +23,7 @@ app.get("/api/generate", async (req, res) => {
     "max-age=604800, stale-while-revalidate=86400"
   );
 
-  const { key, user, type, title, recursive, theme } = req.query;
+  const { key, user, recursive, theme } = req.query;
 
   if (!user)
     return res.send(
@@ -40,7 +40,6 @@ app.get("/api/generate", async (req, res) => {
   });
 
   const projectExts = [];
-  // const projectExts = [...data];
 
   try {
     const repos = await octokit.request("GET /users/{username}/repos", {
@@ -98,21 +97,8 @@ app.get("/api/generate", async (req, res) => {
       return (a[c] = extFreq[c]), a;
     }, {});
 
-  let image;
-
-  switch (type) {
-    case "bubble":
-      image = generate.generateBubbles(user, sortedExts, title, theme);
-      break;
-    case "bar":
-      image = generate.generateBars(sortedExts, title, theme);
-      break;
-    case "both":
-      image = generate.generateBoth(user, sortedExts, title, theme);
-      break;
-    default:
-      image = generate.generateBubbles(user, sortedExts, title, theme);
-  }
+  // const sortedExts = data.long;
+  const image = generate.generateGraph(sortedExts, req.query);
 
   return res.send(image);
 });

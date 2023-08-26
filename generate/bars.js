@@ -9,10 +9,14 @@ const generateBars = (sorted, title, theme) => {
 
   const maxItems = title ? 6 : 7;
 
+  const largest = Math.max(...Object.values(sorted));
+
   const sizes = Object.keys(sorted).reduce((a, c) => {
-    return (a[c] = (sorted[c] / sorted[Object.keys(sorted)[0]]) * mw), a;
+    return (a[c] = (sorted[c] / largest) * mw), a;
   }, {});
-  const sizeArr = Object.keys(sizes).slice(0, maxItems);
+  const sizeArr = Object.keys(sizes)
+    .sort((a, b) => sizes[b] - sizes[a])
+    .slice(0, maxItems);
 
   if (sizeArr.length !== Object.keys(sizes).length) {
     const key = `+ ${Object.keys(sizes).length - sizeArr.length}`;
@@ -20,14 +24,16 @@ const generateBars = (sorted, title, theme) => {
       .slice(sizeArr.length)
       .reduce((a, c) => a + sorted[c], 0);
 
-    sizes[key] = Math.min((extras / sorted[Object.keys(sorted)[0]]) * mw, mw);
+    sizes[key] = Math.min((extras / largest) * mw, mw);
     sorted[key] = extras;
     sizeArr.push(key);
   }
 
   const calculateY = (i) => (title ? m * 2 : m * 1.25) + i * 12 + i * s;
   const calculateFill = (i) =>
-    `hsl(${((sizeArr.length - i) / sizeArr.length) * 300}, 75%, 60%)`;
+    `hsl(${
+      ((Object.keys(sizes).length - i) / Object.keys(sizes).length) * 300
+    }, 75%, 60%)`;
 
   const t = theme || "light";
 

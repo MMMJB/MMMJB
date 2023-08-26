@@ -6,10 +6,12 @@ const generateBubbles = (username, sorted, title, theme) => {
     cs = config.bubble.maxRad,
     s = config.bubble.spacing;
 
+  const largest = Math.max(...Object.values(sorted));
+
   const sizes = Object.keys(sorted).reduce((a, c) => {
-    return (a[c] = (sorted[c] / sorted[Object.keys(sorted)[0]]) * cs), a;
+    return (a[c] = (sorted[c] / largest) * cs), a;
   }, {});
-  const sizeArr = Object.keys(sizes);
+  const sizeArr = Object.keys(sizes).sort((a, b) => sizes[b] - sizes[a]);
 
   const totalWidth =
     sizeArr.reduce((p, c) => p + sizes[c] * 2, 0) + sizeArr.length * s;
