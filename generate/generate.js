@@ -4,13 +4,13 @@ const generateBubbles = require("./bubbles");
 const generateBars = require("./bars");
 const generateError = require("./error");
 
-const generateBoth = (username, sorted, title) => {
+const generateBoth = (username, sorted, title, gap) => {
   const bubbles = generateBubbles(username, sorted, title);
   const bars = generateBars(sorted, title);
 
-  const w = config.largeWidth + config.smallWidth + 4,
-    h = config.largeHeight,
-    g = config.largeWidth + config.both.spacing;
+  const h = config.largeHeight,
+    g = config.largeWidth + (parseFloat(gap) || config.both.spacing),
+    w = config.largeWidth + config.smallWidth + g;
 
   return `
     <svg viewbox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">

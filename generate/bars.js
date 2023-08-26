@@ -64,7 +64,7 @@ const generateBars = (sorted, title) => {
         }
       </style>
 
-      <rect width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" stroke-width="2"/>
+      <rect width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" />
 
       <g dominant-baseline="middle" text-anchor="end">
         ${sizeArr

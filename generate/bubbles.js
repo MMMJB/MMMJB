@@ -58,7 +58,7 @@ const generateBubbles = (username, sorted, title) => {
         </clipPath>
       </defs>
 
-      <rect width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" stroke-width="2"/>
+      <rect width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" />
 
       <g id="bubbles" clip-path="url(#boxClip)" transform="translate(${
         w / 2 - totalWidth / 2
