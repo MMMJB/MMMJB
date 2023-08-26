@@ -1,6 +1,6 @@
 const config = require("./config.json");
 
-const generateBubbles = (username, sorted, title) => {
+const generateBubbles = (username, sorted, title, theme) => {
   const w = config.largeWidth,
     h = config.largeHeight,
     cs = config.bubble.maxRad,
@@ -13,6 +13,8 @@ const generateBubbles = (username, sorted, title) => {
 
   const totalWidth =
     sizeArr.reduce((p, c) => p + sizes[c] * 2, 0) + sizeArr.length * s;
+
+  const t = theme || "light";
 
   const image = `
     <svg viewbox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
@@ -32,13 +34,20 @@ const generateBubbles = (username, sorted, title) => {
           75% { translate: -2px 0px }
           87.5% { translate: -1px -.5px }
         }
+
+        :root {
+          --text: ${t === "light" ? config.text.light : config.text.dark};
+          --fill: ${t === "light" ? config.fill.light : config.fill.dark};
+          --stroke: ${t === "light" ? config.stroke.light : config.stroke.dark};
+        }
       
         text {
            font-family: "system-ui", "sans-serif";
+           fill: var(--text);
         }
 
         .bubble text {
-          fill: rgba(255, 255, 255, .5);
+          fill-opacity: 50%;
           font-size: 12px;
           text-transform: uppercase;
         }
@@ -58,7 +67,7 @@ const generateBubbles = (username, sorted, title) => {
         </clipPath>
       </defs>
 
-      <rect width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" />
+      <rect width="${w}" height="${h}" rx="16" fill="var(--fill)" stroke="var(--stroke)" />
 
       <g id="bubbles" clip-path="url(#boxClip)" transform="translate(${
         w / 2 - totalWidth / 2
@@ -94,12 +103,12 @@ const generateBubbles = (username, sorted, title) => {
       </g>
 
       <g dominant-baseline="middle" text-anchor="middle">
-        <text x="${w / 2}" y="18" fill="white">${
+        <text x="${w / 2}" y="18">${
     title !== undefined ? title : `${username}'s Languages Used`
   }</text>
         <text x="${w / 2}" y="${
     h - 12
-  }" fill="white" fill-opacity="50%" font-size="8px">Based on number of files of type created in all public repositories.</text>
+  }" fill-opacity="50%" font-size="8px">Based on number of files of type created in all public repositories.</text>
       </g>
     </svg>
   `;

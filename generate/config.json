@@ -3,6 +3,18 @@
   "largeHeight": 200,
   "smallWidth": 300,
   "smallHeight": 200,
+  "fill": {
+    "light": "white",
+    "dark": "rgb(34, 39, 46)"
+  },
+  "stroke": {
+    "light": "rgb(208, 215, 222)",
+    "dark": "rgb(68, 76, 86)"
+  },
+  "text": {
+    "light": "black",
+    "dark": "white"
+  },
   "bubble": {
     "maxRad": 35,
     "spacing": 8

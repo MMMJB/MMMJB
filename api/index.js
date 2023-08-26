@@ -23,69 +23,70 @@ app.get("/api/generate", async (req, res) => {
     "max-age=604800, stale-while-revalidate=86400"
   );
 
-  const { key, user, type, title, recursive, gap } = req.query;
+  const { key, user, type, title, recursive, theme } = req.query;
 
   if (!user)
     return res.send(
       generate.generateError(
         "a valid github user must be specified",
-        "Reference using ?user=[user]"
+        "Reference using ?user=[user]",
+        theme
       )
     );
 
-  // const octokit = new octo.Octokit({
-  //   auth: key,
-  //   request: { fetch: fetch },
-  // });
+  const octokit = new octo.Octokit({
+    auth: key,
+    request: { fetch: fetch },
+  });
 
-  // const projectExts = [];
-  const projectExts = [...data];
+  const projectExts = [];
+  // const projectExts = [...data];
 
-  // try {
-  //   const repos = await octokit.request("GET /users/{username}/repos", {
-  //     username: user,
-  //   });
+  try {
+    const repos = await octokit.request("GET /users/{username}/repos", {
+      username: user,
+    });
 
-  //   await Promise.all(
-  //     repos["data"].map(async (r) => {
-  //       const info = await octokit.request(
-  //         "GET /repos/{owner}/{repo}/branches/{branch}",
-  //         {
-  //           owner: user,
-  //           repo: r["name"],
-  //           branch: r["default_branch"],
-  //         }
-  //       );
+    await Promise.all(
+      repos["data"].map(async (r) => {
+        const info = await octokit.request(
+          "GET /repos/{owner}/{repo}/branches/{branch}",
+          {
+            owner: user,
+            repo: r["name"],
+            branch: r["default_branch"],
+          }
+        );
 
-  //       const sha = info["data"]["commit"]["commit"]["tree"]["sha"];
+        const sha = info["data"]["commit"]["commit"]["tree"]["sha"];
 
-  //       const repo = await octokit.request(
-  //         `GET /repos/{owner}/{repo}/git/trees/{tree_sha}${
-  //           recursive ? "?recursive=1" : ""
-  //         }`,
-  //         {
-  //           owner: user,
-  //           repo: r["name"],
-  //           tree_sha: sha,
-  //         }
-  //       );
+        const repo = await octokit.request(
+          `GET /repos/{owner}/{repo}/git/trees/{tree_sha}${
+            recursive ? "?recursive=1" : ""
+          }`,
+          {
+            owner: user,
+            repo: r["name"],
+            tree_sha: sha,
+          }
+        );
 
-  //       const files = repo["data"]["tree"].reduce((a, c) => {
-  //         if (c.type === "blob") {
-  //           const extension = c.path.substring(c.path.lastIndexOf(".") + 1);
+        const files = repo["data"]["tree"].reduce((a, c) => {
+          if (c.type === "blob") {
+            const extension = c.path.substring(c.path.lastIndexOf(".") + 1);
 
-  //           if (Object.keys(whitelist).includes(extension)) a.push(extension);
-  //         }
+            if (Object.keys(whitelist).includes(extension)) a.push(extension);
+          }
 
-  //         return a;
-  //       }, []);
+          return a;
+        }, []);
 
-  //       projectExts.push(files);
-  //     })
-  //   );
-  // } catch (err) {
-  //   return res.send(generate.generateError(err.message));
-  // }
+        projectExts.push(files);
+      })
+    );
+  } catch (err) {
+    return res.send(generate.generateError(err.message, "", theme));
+  }
 
   const extFreq = projectExts.flat().reduce((a, c) => {
     return a[c] ? ++a[c] : (a[c] = 1), a;
@@ -101,16 +102,16 @@ app.get("/api/generate", async (req, res) => {
 
   switch (type) {
     case "bubble":
-      image = generate.generateBubbles(user, sortedExts, title);
+      image = generate.generateBubbles(user, sortedExts, title, theme);
       break;
     case "bar":
-      image = generate.generateBars(sortedExts, title);
+      image = generate.generateBars(sortedExts, title, theme);
       break;
     case "both":
-      image = generate.generateBoth(user, sortedExts, title, gap);
+      image = generate.generateBoth(user, sortedExts, title, theme);
       break;
     default:
-      image = generate.generateBubbles(user, sortedExts, title);
+      image = generate.generateBubbles(user, sortedExts, title, theme);
   }
 
   return res.send(image);

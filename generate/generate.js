@@ -4,12 +4,12 @@ const generateBubbles = require("./bubbles");
 const generateBars = require("./bars");
 const generateError = require("./error");
 
-const generateBoth = (username, sorted, title, gap) => {
-  const bubbles = generateBubbles(username, sorted, title);
-  const bars = generateBars(sorted, title);
+const generateBoth = (username, sorted, title, theme) => {
+  const bubbles = generateBubbles(username, sorted, title, theme);
+  const bars = generateBars(sorted, title, theme);
 
   const h = config.largeHeight,
-    g = config.largeWidth + (parseFloat(gap) || config.both.spacing),
+    g = config.largeWidth + config.both.spacing,
     w = config.largeWidth + config.smallWidth + g;
 
   return `

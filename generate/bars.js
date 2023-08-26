@@ -1,6 +1,6 @@
 const config = require("./config.json");
 
-const generateBars = (sorted, title) => {
+const generateBars = (sorted, title, theme) => {
   const w = config.smallWidth,
     h = config.smallHeight,
     m = h / 8,
@@ -29,6 +29,8 @@ const generateBars = (sorted, title) => {
   const calculateFill = (i) =>
     `hsl(${((sizeArr.length - i) / sizeArr.length) * 300}, 75%, 60%)`;
 
+  const t = theme || "light";
+
   const image = `
     <svg viewbox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
       <style>
@@ -37,8 +39,15 @@ const generateBars = (sorted, title) => {
           to { transform: scale(1, 1); }
         }
 
+        :root {
+          --text: ${t === "light" ? config.text.light : config.text.dark};
+          --fill: ${t === "light" ? config.fill.light : config.fill.dark};
+          --stroke: ${t === "light" ? config.stroke.light : config.stroke.dark};
+        }
+
         text {
            font-family: "system-ui", "sans-serif";
+           fill: var(--text);
         }
 
         .bar-shadow {
@@ -53,18 +62,18 @@ const generateBars = (sorted, title) => {
         }
 
         .label {
-          fill: rgba(255, 255, 255, .75);
+          fill-opacity: 75%;
           text-transform: uppercase;
           font-size: 12px;
         }
 
         .num {
-          fill: rgba(255, 255, 255, .25);
+          fill-opacity: 25%;
           font-size: 10px;
         }
       </style>
 
-      <rect width="${w}" height="${h}" rx="16" fill="rgb(34, 39, 46)" stroke="rgb(68, 76, 86)" />
+      <rect width="${w}" height="${h}" rx="16" fill="var(--fill)" stroke="var(--stroke)" />
 
       <g dominant-baseline="middle" text-anchor="end">
         ${sizeArr
@@ -95,7 +104,7 @@ const generateBars = (sorted, title) => {
         (title &&
           `<text dominant-baseline="middle" text-anchor="middle" x="${
             w / 2
-          }" y="24" fill="white">${title}</text>`) ||
+          }" y="24">${title}</text>`) ||
         ""
       }
     </svg>
