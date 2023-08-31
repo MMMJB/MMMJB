@@ -23,7 +23,7 @@ app.get("/api/generate", async (req, res) => {
     "max-age=604800, stale-while-revalidate=86400"
   );
 
-  const { key, user, recursive, theme } = req.query;
+  const { key, user, recursive, theme, exclude } = req.query;
 
   if (!user)
     return res.send(
@@ -48,6 +48,8 @@ app.get("/api/generate", async (req, res) => {
 
     await Promise.all(
       repos["data"].map(async (r) => {
+        if (exclude.split(",").includes(r["name"])) return;
+
         const info = await octokit.request(
           "GET /repos/{owner}/{repo}/branches/{branch}",
           {
