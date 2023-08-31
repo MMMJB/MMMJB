@@ -3,8 +3,8 @@
 <div align="center">
   <a href="https://github.com/MMMJB/MMMJB">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://mmmjb.vercel.app/api/generate?type=both&user=MMMJB&recursive=1&theme=dark&exclude=quill&title=" />
-      <img src="https://mmmjb.vercel.app/api/generate?type=both&user=MMMJB&recursive=1&theme=light&exclude=quill&title=" />
+      <source media="(prefers-color-scheme: dark)" srcset="https://mmmjb.vercel.app/api/generate?type=both&user=MMMJB&theme=dark&exclude=quill&recursive=1&title=" />
+      <img src="https://mmmjb.vercel.app/api/generate?type=both&user=MMMJB&theme=light&exclude=quill&recursive=1&title=" />
     </picture>
   </a>
   <a href="https://streak-stats.demolab.com/demo/">
