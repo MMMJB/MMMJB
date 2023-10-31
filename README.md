@@ -1,5 +1,3 @@
-<img src="./public/header.svg" width="100%" />
-
 <div align="center">
   <a href="https://github.com/MMMJB/MMMJB">
     <picture>
@@ -13,32 +11,4 @@
       <img src="https://streak-stats.demolab.com?user=MMMJB&border_radius=16&card_width=804&background=FFFFFF&border=D0D7DE&stroke=D0D7DE&sideLabels=000000A0&dates=D0D7DE" />
     </picture>
   </a>
-
-  <br>
-  <br>
-
-  <details>
-    <summary>
-      <h3>My Tools</h3>
-    </summary>
-
-  <h4>Web Dev</h4>
-    <div>
-      <img src="https://cdn.simpleicons.org/react" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/tailwindcss" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/javascript" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/html5" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/css3" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/tensorflow" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/threedotjs" width="32">
-    </div>
-
-  <h4>Design</h4>
-    <div>
-      <img src="https://cdn.simpleicons.org/figma" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/freepik" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/googlefonts" width="32">&nbsp;
-      <img src="https://cdn.simpleicons.org/materialdesignicons" width="32">
-    </div>
-  </details>
 </div>
