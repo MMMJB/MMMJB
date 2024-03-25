@@ -1,10 +1,10 @@
 <div align="center">
-  <a href="https://github.com/MMMJB/MMMJB">
+<!--   <a href="https://github.com/MMMJB/MMMJB">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://mmmjb.vercel.app/api/generate?type=both&user=MMMJB&theme=dark&exclude=quill&recursive=1&title=" />
       <img src="https://mmmjb.vercel.app/api/generate?type=both&user=MMMJB&theme=light&exclude=quill&recursive=1&title=" />
     </picture>
-  </a>
+  </a> -->
   <a href="https://streak-stats.demolab.com/demo/">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=MMMJB&theme=dark&border_radius=16&card_width=806&background=22272E&border=444C56&stroke=444C56&sideLabels=FFFFFFA0&dates=444C56" />
